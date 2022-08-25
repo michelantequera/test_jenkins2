@@ -1,19 +1,14 @@
 pipeline {
-  agent {
-    node {
-      label 'variables'
-    }
-
-  }
+  agent any
   stages {
     stage('fetch') {
       steps {
         sh 'git fetch --force'
-        sh ' {DIFF_YML} = git diff main origin/main --name-only "*.yml"'
+        sh 'Â {DIFF_YML} = git diff main origin/main --name-only "*.yml"'
       }
     }
 
-    stage('') {
+    stage('error') {
       steps {
         echo '{DIFF_YML}'
       }
