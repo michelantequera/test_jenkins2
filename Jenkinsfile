@@ -10,7 +10,7 @@ pipeline {
 
     stage('error') {
       steps {
-        echo '${DIFF_YML}'
+        echo 'DIFF_YML'
       }
     }
 
