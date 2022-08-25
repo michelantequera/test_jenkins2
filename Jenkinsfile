@@ -4,6 +4,7 @@ pipeline {
     stage('fetch') {
       steps {
         sh 'git fetch --force'
+        sh 'git diff \'*.yml\' --name-only main origin/main'
       }
     }
 
