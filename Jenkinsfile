@@ -1,5 +1,10 @@
 pipeline {
-  agent none
+  agent {
+    node {
+      label 'test'
+    }
+
+  }
   stages {
     stage('fetch') {
       steps {
@@ -13,5 +18,8 @@ pipeline {
       }
     }
 
+  }
+  environment {
+    AMBIENTE = ''
   }
 }
