@@ -10,12 +10,12 @@ pipeline {
 
     stage('error') {
       steps {
-        echo '{DIFF_YML}'
+        echo '${DIFF_YML}'
       }
     }
 
   }
   environment {
-    DIFF_YML = ''
+    DIFF_YML = 'asdasdasd'
   }
 }
