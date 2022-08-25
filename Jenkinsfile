@@ -4,7 +4,7 @@ pipeline {
     stage('fetch') {
       steps {
         sh 'git fetch --force'
-        sh ' {DIFF_YML} = git diff main origin/main --name-only "*.yml"'
+        sh '{DIFF_YML} = git diff main origin/main --name-only "*.yml"'
       }
     }
 
@@ -14,8 +14,5 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    DIFF_YML = ' '
   }
 }
