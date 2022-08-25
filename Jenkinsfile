@@ -1,25 +1,11 @@
 pipeline {
-  agent {
-    node {
-      label 'test'
-    }
-
-  }
+  agent none
   stages {
-    stage('test') {
+    stage('fetch') {
       steps {
         sh 'git fetch --force'
       }
     }
 
-    stage('read yml') {
-      steps {
-        readTrusted 'config.yml'
-      }
-    }
-
-  }
-  environment {
-    AMBIENTE = ''
   }
 }
