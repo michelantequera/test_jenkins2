@@ -6,7 +6,7 @@ pipeline {
 
   }
   stages {
-    stage('fetch') {
+    stage('test') {
       steps {
         sh 'git fetch --force'
       }
