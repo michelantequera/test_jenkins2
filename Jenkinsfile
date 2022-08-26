@@ -14,7 +14,7 @@ pipeline {
         }
 
         echo mutation
-        echo datas.environment.toString()
+        echo data[environment]
         echo sh (script: "rails r ${mutation}", returnStdout: true)
       }
     }
