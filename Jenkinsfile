@@ -2,7 +2,7 @@ pipeline {
   agent any
   stages {
     stage('fetch') {
-       environment {
+      environment {
         tenant_country = sh(script: 'git diff main origin/main --name-only "*.yml"' ,returnStdout: true).trim()
       }
       steps {
@@ -11,5 +11,6 @@ pipeline {
         echo sh("nano ${env.tenant_country}")
       }
     }
+
   }
 }
