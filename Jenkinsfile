@@ -2,15 +2,12 @@ pipeline {
   agent any
   stages {
     stage('fetch') {
-      steps {
+       environment {
         tenant_country = sh(script: 'git diff main origin/main --name-only "*.yml"' ,returnStdout: true).trim()
-        sh 'git fetch --force'
       }
-    }
-
-    stage('error') {
       steps {
-        echo 'asd'
+        sh 'git fetch --force'
+        echo tenant_country
       }
     }
   }
