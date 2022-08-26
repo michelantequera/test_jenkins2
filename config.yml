@@ -1,6 +1,6 @@
 ---
 clusters:
-  enterprise-chile: false
+  enterprise-chile: True
   enterprise-colombia: False
   enterprise-peru: True
   enterprise-mexico: False
