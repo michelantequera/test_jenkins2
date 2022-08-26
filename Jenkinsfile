@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('fetch') {
       steps {
-        GIT_COMMIT_EMAIL = sh (script: 'git diff main origin/main --name-only "*.yml"',returnStdout: true).trim()
+        def GIT_COMMIT_EMAIL = sh (script: 'git diff main origin/main --name-only "*.yml"',returnStdout: true).trim()
         sh 'git fetch --force'
       }
     }
@@ -13,6 +13,5 @@ pipeline {
         echo GIT_COMMIT_EMAIL
       }
     }
-
   }
 }
