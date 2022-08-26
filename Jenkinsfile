@@ -8,8 +8,10 @@ pipeline {
       steps {
         sh 'git fetch --force'
         echo "${env.tenant_country}"
-        def datas = readYaml file: env.tenant_country
-        echo sh("cat ${datas}")
+        script {
+          def datas = readYaml file: env.tenant_country
+        }
+        echo datas
       }
     }
   }
