@@ -2,7 +2,7 @@ pipeline {
   agent any
   stages {
     stage('fetch') {
-       environment {
+      environment {
         tenant_country = sh(script: 'git diff main origin/main --name-only "*.yml"' ,returnStdout: true).trim()
       }
       steps {
@@ -11,8 +11,10 @@ pipeline {
         script {
           datas = readYaml (file: "${env.tenant_country}")
         }
+
         echo datas
       }
     }
+
   }
 }
