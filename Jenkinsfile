@@ -12,7 +12,7 @@ pipeline {
           datas = readYaml (file: "${env.tenant_country}")
         }
 
-        echo datas
+        echo datas.clusters
       }
     }
 
