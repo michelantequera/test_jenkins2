@@ -3,7 +3,7 @@ clusters:
   enterprise-chile: True
   enterprise-colombia: False
   enterprise-peru: True
-  enterprise-mexico: False
+  enterprise-mexico: True
 tenants:
   - demo1
   - demo2
