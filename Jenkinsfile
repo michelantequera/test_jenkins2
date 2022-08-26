@@ -12,10 +12,12 @@ pipeline {
         script {
           datas = readYaml (file: "${env.tenant_country}")
         }
+
         echo mutation
         echo datas.clusters.toString()
         echo sh (script: "rails r ${mutation}", returnStdout: true)
       }
     }
+
   }
 }
