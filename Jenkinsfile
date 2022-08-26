@@ -7,10 +7,12 @@ pipeline {
         sh 'git fetch --force'
       }
     }
+
     stage('error') {
       steps {
-        echo yml
+        echo 'DIFF_YML'
       }
     }
+
   }
 }
