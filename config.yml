@@ -1,1 +1,9 @@
-Esto es una prueba 8
+---
+clusters:
+  enterprise-chile: True
+  enterprise-colombia: False
+  enterprise-peru: True
+  enterprise-mexico: False
+tenants:
+  - demo1
+  - demo2
