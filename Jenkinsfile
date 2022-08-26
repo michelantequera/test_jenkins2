@@ -3,19 +3,14 @@ pipeline {
   stages {
     stage('fetch') {
       steps {
-        sh 'git diff main origin/main --name-only "*.yml"'
+        def yml = sh (script: 'git diff main origin/main --name-only "*.yml"', returnStdout: true)
         sh 'git fetch --force'
       }
     }
-
     stage('error') {
       steps {
-        echo 'DIFF_YML'
+        echo yml
       }
     }
-
-  }
-  environment {
-    DIFF_YML = 'asdasdasd'
   }
 }
