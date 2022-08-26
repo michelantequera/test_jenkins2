@@ -1,9 +1,4 @@
 ---
-clusters:
-  enterprise-chile: True
-  enterprise-colombia: False
-  enterprise-peru: True
-  enterprise-mexico: True
-tenants:
-  - demo1
-  - demo2
+Enterprise-Chile:
+  Chile: "Salcobrand"
+---
