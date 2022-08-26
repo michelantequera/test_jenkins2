@@ -14,7 +14,7 @@ pipeline {
         }
 
         echo mutation
-        echo data[environment]
+        echo datas[environment]
         echo sh (script: "rails r ${mutation}", returnStdout: true)
       }
     }
