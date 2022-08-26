@@ -3,14 +3,14 @@ pipeline {
   stages {
     stage('fetch') {
       steps {
-        def GIT_COMMIT_EMAIL = sh (script: 'git diff main origin/main --name-only "*.yml"',returnStdout: true).trim()
+         env.tenant_country = sh (script: 'git diff main origin/main --name-only "*.yml"',returnStdout: true).trim()
         sh 'git fetch --force'
       }
     }
 
     stage('error') {
       steps {
-        echo GIT_COMMIT_EMAIL
+        echo env.tenant_country
       }
     }
   }
