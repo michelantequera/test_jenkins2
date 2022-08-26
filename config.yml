@@ -1,4 +1,5 @@
 ---
-Enterprise-Chile:
-  Chile: Salcobran
+cluster: enterprise-Chile
+environment: chile
+tenant: salcobrand
 ---
