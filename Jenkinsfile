@@ -38,7 +38,7 @@ pipeline {
          aws sts get-caller-identity
          aws eks update-kubeconfig --name staging-eks --region sa-east-1 --role-arn arn:aws:iam::770092832210:role/jenkins-agent-eks-rapanui
          kubectl config set-context --current --namespace=$NAMESPACE
-         kubectl exec -it -c $pod -t \$(kubectl get pod -l "app.kubernetes.io/name=$pod" -o jsonpath='{.items[0].metadata.name}') -- bin/rails r print hola
+         kubectl exec -it -c $pod -t \$(kubectl get pod -l "app.kubernetes.io/name=$pod" -o jsonpath='{.items[0].metadata.name}') -- bin/rails r print 'hola desde consola'
          """
         echo datas['cluster']
         echo sh (script: "rails r ${mutation}", returnStdout: true)
