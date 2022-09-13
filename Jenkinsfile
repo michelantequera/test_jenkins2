@@ -4,14 +4,14 @@ import groovy.transform.Field
 
 pipeline {
   agent { label 'rapanui'}
+  environment {
+    SLACK_CHANNEL = "prueba-notificaciones"
+    cluster = "staging-eks"
+    namespace = "staging-chile"
+    pod = "buk-worker"
+    DOCKER_IMAGE = "770092832210.dkr.ecr.sa-east-1.amazonaws.com/buk/sre-tools:latest"
+  }
   stages {
-    environment {
-        SLACK_CHANNEL = "prueba-notificaciones"
-        cluster = "staging-eks"
-        namespace = "staging-chile"
-        pod = "buk-worker"
-        DOCKER_IMAGE = "770092832210.dkr.ecr.sa-east-1.amazonaws.com/buk/sre-tools:latest"
-    }
     stage('fetch') {
       agent {
          docker {
@@ -32,7 +32,6 @@ pipeline {
         mutation = sh(script: 'git diff main origin/main --name-only "*.rb"' ,returnStdout: true).trim()
         datas = readYaml (file: "${env.tenant_country}")
       }
-
         sh """
          env | sort
          aws sts get-caller-identity
@@ -43,13 +42,13 @@ pipeline {
         echo datas['cluster']
       }
       post {
-      failure {
-        slackStageUpdate(thread: SetEnvMsg, color: 'danger')
+        failure {
+          slackStageUpdate(thread: SetEnvMsg, color: 'danger')
+        }
+        success {
+          slackStageUpdate(color: 'good', thread: SetEnvMsg)
+        }
       }
-      success {
-        slackStageUpdate(color: 'good', thread: SetEnvMsg)
-      }
-    }
     }
   }
 }
