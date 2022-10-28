@@ -1,52 +1,80 @@
 import groovy.transform.Field
 
-@Field def SetEnvMsg = ''
+@Field def author = ''
+@Field def message = ''
+@Field def mutation = ''
+@Field def namespace = ''
+@Field def cluster = ''
+@Field def file_path = ''
+@Field def tenant = ''
+@Field def pod = 'buk-worker'
+@Field def configs = [
+  Chile: [
+    cluster: 'chile-enterprise-eks',
+    namespace: 'enterprise-chile'
+  ],
+  Colombia: [
+    cluster: 'enterprise-colombia',
+    namespace: 'enterprise-colombia',
+  ],
+  Mexico: [
+    cluster: 'enterprise-mexico-eks',
+    namespace: 'enterprise-mexico',
+  ],
+  Peru: [
+    cluster: 'enterprise-peru',
+    namespace: 'enterprise-peru'
+  ]
+]
 
 pipeline {
   agent { label 'rapanui'}
   environment {
-    SLACK_CHANNEL = "prueba-notificaciones"
-    cluster = "staging-eks"
-    namespace = "staging-chile"
-    pod = "buk-worker"
+    SLACK_CHANNEL = "#rapanui"
     DOCKER_IMAGE = "770092832210.dkr.ecr.sa-east-1.amazonaws.com/buk/sre-tools:latest"
   }
   stages {
-    stage('fetch') {
+    stage('repo'){
+      steps {
+        sshagent(["bermuditas-ssh"]) {
+          sh 'git checkout main'
+          sh 'git pull --force'
+          script {
+            yml_file = sh(script: 'git diff-tree -r --no-commit-id HEAD HEAD~1 --name-only "*.yml"' ,returnStdout: true).trim()
+            file_path = sh(script: 'git diff-tree -r --no-commit-id HEAD HEAD~1 --name-only "*.rb"' ,returnStdout: true).trim()
+            message = sh(returnStdout: true, script: 'git log -1 --pretty=%B HEAD').trim()
+            author = sh(returnStdout: true, script: "git show -s --format='%ae' HEAD").trim()
+            mutation = sh(script: """cat ${file_path}""" ,returnStdout: true).trim()
+            config_input = readYaml (file: yml_file) 
+            tenant = config_input['tenant']
+            country_config = configs[config_input['country']]
+            namespace = country_config.namespace
+            cluster = country_config.cluster
+          }
+        }
+      }
+    }
+    stage('agente') {
       agent {
          docker {
            image "$DOCKER_IMAGE"
+           args "-u root"
            reuseNode true
          }
        }
       steps {
-        script {
-        pipelineThread = slackPipelineStart("$SLACK_CHANNEL")
-        SetEnvMsg = slackStageStart(thread: pipelineThread)
-      }
-      sh 'git checkout main'
-      sh 'git checkout origin/feature/R2D2-8-ccreacion-jenkinsfile'
-      sh 'git fetch --force'
-      script {
-        tenant_country = sh(script: 'git diff main origin/feature/R2D2-8-ccreacion-jenkinsfile --name-only "*.yml"' ,returnStdout: true).trim()
-        mutation = sh(script: 'git diff main origin/main --name-only "*.rb"' ,returnStdout: true).trim()
-        datas = readYaml (file: "${env.tenant_country}")
-      }
         sh """
-         env | sort
-         aws sts get-caller-identity
-         aws eks update-kubeconfig --name staging-eks --region sa-east-1 --role-arn arn:aws:iam::770092832210:role/jenkins-agent-eks-rapanui
-         kubectl config set-context --current --namespace=$NAMESPACE
-         kubectl exec -it -c $pod -t \$(kubectl get pod -l "app.kubernetes.io/name=$pod" -o jsonpath='{.items[0].metadata.name}') -- bin/rails r print 'hola'
+         aws eks update-kubeconfig --name $cluster --region sa-east-1
+         kubectl config set-context --current --namespace=$namespace
+         kubectl exec -i -c $pod \$(kubectl get pod -l "app.kubernetes.io/name=$pod" -o jsonpath='{.items[0].metadata.name}') -- env TENANT=${tenant} bin/rails r "${mutation}"
          """
-        echo datas['cluster']
       }
       post {
         failure {
-          slackStageUpdate(thread: SetEnvMsg, color: 'danger')
+          slackSend color: "danger", message: "Rapanui con errores por $author commit: $message", channel: "$SLACK_CHANNEL"
         }
         success {
-          slackStageUpdate(color: 'good', thread: SetEnvMsg)
+          slackSend color: "good", message: "Rapanui ejecutado por $author commit: $message", channel: "$SLACK_CHANNEL"
         }
       }
     }
